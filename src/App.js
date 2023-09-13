@@ -8,10 +8,11 @@ import "leaflet/dist/leaflet.css";
 function App() {
   // var geoMapInstance = <></>;
   const center = [40.902771, -73.13385];
-  const [uploadedGeoJSONFile, setUploadedGeoJSONFile] = useState(null);
+  const [uploadedGeoJSONFile, setUploadedGeoJSONFile] = useState();
 
   function showFile(event) {
     event.preventDefault();
+    setUploadedGeoJSONFile(undefined);
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       const text = JSON.parse(event.target.result);
