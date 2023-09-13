@@ -6,15 +6,15 @@ import "leaflet/dist/leaflet.css";
 
 function App() {
   const center = [40.902771, -73.13385];
-  const [uploadedGeoJSONFile, setUploadedGeoJSONFile] = useState();
+  const [uploadedGeoJsonFile, setUploadedGeoJsonFile] = useState();
 
-  function showFile(event) {
+  function readJsonFile(event) {
     event.preventDefault();
-    setUploadedGeoJSONFile(undefined);
+    setUploadedGeoJsonFile(undefined);
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       const text = JSON.parse(event.target.result);
-      setUploadedGeoJSONFile(text);
+      setUploadedGeoJsonFile(text);
     };
     fileReader.readAsText(event.target.files[0]);
   }
@@ -29,7 +29,7 @@ function App() {
         accept=".json"
         id="geoJsonInput"
         onChange={(event) => {
-          showFile(event);
+          readJsonFile(event);
         }}
       />
 
@@ -41,7 +41,7 @@ function App() {
         {/* TODO: add conditions such that depending on the uploaded file format,
         create a map component accordingly //currently, always creating a
         GeoJSON Map */}
-        {!!uploadedGeoJSONFile && <GeoMap mapData={uploadedGeoJSONFile} />}
+        {!!uploadedGeoJsonFile && <GeoMap mapData={uploadedGeoJsonFile} />}
       </MapContainer>
     </div>
   );
