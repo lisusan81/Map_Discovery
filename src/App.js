@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GeoMap from "./components/GeoMap";
-import { GeoJSON } from "react-leaflet";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 
 function App() {
-  // var geoMapInstance = <></>;
   const center = [40.902771, -73.13385];
   const [uploadedGeoJSONFile, setUploadedGeoJSONFile] = useState();
 
@@ -24,9 +22,12 @@ function App() {
   return (
     <div>
       <h1>MAP DISCOVERY</h1>
+      <label htmlFor="geoJsonInput">Choose a GeoJSON File: </label>
+      <br />
       <input
         type="file"
         accept=".json"
+        id="geoJsonInput"
         onChange={(event) => {
           showFile(event);
         }}
@@ -40,12 +41,7 @@ function App() {
         {/* TODO: add conditions such that depending on the uploaded file format,
         create a map component accordingly //currently, always creating a
         GeoJSON Map */}
-
-        {/* <GeoMap file={uploadedGeoJSONFile} /> */}
-        {/* {geoMapInstance} */}
-        {uploadedGeoJSONFile?.features && (
-          <GeoJSON data={uploadedGeoJSONFile.features} />
-        )}
+        {!!uploadedGeoJSONFile && <GeoMap mapData={uploadedGeoJSONFile} />}
       </MapContainer>
     </div>
   );
