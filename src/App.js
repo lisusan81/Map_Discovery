@@ -2,6 +2,7 @@ import GeoMap from "./components/GeoMap";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
+import KML from "./components/KML";
 
 function App() {
   const center = [40.902771, -73.13385];
@@ -17,6 +18,7 @@ function App() {
         create a map component accordingly //currently, always creating a
         GeoJSON Map
         <GeoMap />
+        <KML/>
       </MapContainer>
     </div>
   );
