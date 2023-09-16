@@ -89,7 +89,7 @@ function App() {
         type="file"
         id="kmlInput"
         onChange={(event) => {
-          uploadedKmlFile(event);
+          readKmlFile(event);
         }}
       />
 
