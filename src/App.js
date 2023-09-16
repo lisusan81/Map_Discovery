@@ -4,7 +4,7 @@ import GeoMap from "./components/GeoMap";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
-import KML from "./components/KML";
+import KmlMap from "./components/KmlMap";
 import ShapeFileMap from "./components/ShapeFileMap";
 import ITA_adm from "./test_files/ITA_adm.zip";
 import JSZip from "jszip";
@@ -15,6 +15,7 @@ function App() {
   const [uploadedGeoJsonFile, setUploadedGeoJsonFile] = useState();
   const [shpFile, setShpFile] = useState(null);
   const [map, setMap] = useState(null);
+  const [uploadedKmlFile, setUploadedKmlFile] = useState();
 
   useEffect(() => {
     if (!map) return;
@@ -46,11 +47,23 @@ function App() {
   //   }
   // };
 
+  function readKmlFile(event) {
+    event.preventDefault();
+    setUploadedKmlFile(undefined);
+    const fileReader = new FileReader();
+    fileReader.onload = (event) => {
+      const parser = new DOMParser();
+      const text = parser.parseFromString(event.target.result, "text/xml");
+      setUploadedKmlFile(text);
+    };
+    fileReader.readAsText(event.target.files[0]);
+  }
+
   return (
     <div>
       <h1>MAP DISCOVERY</h1>
-
       <label htmlFor="geoJsonInput">Choose a GeoJSON File: </label>
+      <br />
       <input
         type="file"
         accept=".json"
@@ -59,27 +72,14 @@ function App() {
           readJsonFile(event);
         }}
       />
-      <label htmlFor="shpFiles">Choose a Shapefile: </label>
-      <input
-        type="file"
-        id="zipFileInput"
-        onChange={(event) => {
-          setShpFile(event.target.files[0]);
-        }}
-      />
-      <MapContainer
-        center={center}
-        zoom={13}
-        scrollWheelZoom={true}
-        // ref={setMap}
-      >
+
+      <MapContainer center={center} zoom={13} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {!!uploadedGeoJsonFile && <GeoMap mapData={uploadedGeoJsonFile} />}
         <KML />
-        {!!shpFile && <ShapeFileMap zip={shpFile} />}
       </MapContainer>
     </div>
   );
