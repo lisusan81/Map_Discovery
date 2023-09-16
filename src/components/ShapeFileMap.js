@@ -6,7 +6,6 @@ import L from "leaflet";
 import shp from "shpjs";
 
 const ShapeFileMap = ({ zip }) => {
-  console.log("9" + zip);
   const map = useMap();
 
   useEffect(() => {

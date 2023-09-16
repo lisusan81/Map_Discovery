@@ -72,6 +72,26 @@ function App() {
           readJsonFile(event);
         }}
       />
+      <br />
+      <label htmlFor="shpInput">Choose a shapefile: </label>
+      <br />
+      <input
+        type="file"
+        id="shpInput"
+        onChange={(event) => {
+          setShpFile(event.target.files[0]);
+        }}
+      />
+      <br />
+      <label htmlFor="kmlInput">Choose a kmlfile: </label>
+      <br />
+      <input
+        type="file"
+        id="kmlInput"
+        onChange={(event) => {
+          uploadedKmlFile(event);
+        }}
+      />
 
       <MapContainer center={center} zoom={13} scrollWheelZoom={true}>
         <TileLayer
@@ -79,7 +99,8 @@ function App() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {!!uploadedGeoJsonFile && <GeoMap mapData={uploadedGeoJsonFile} />}
-        <KML />
+        {!!uploadedKmlFile && <KmlMap mapData={uploadedKmlFile} />}
+        {!!shpFile && <ShapeFileMap zip={shpFile} />}
       </MapContainer>
     </div>
   );
