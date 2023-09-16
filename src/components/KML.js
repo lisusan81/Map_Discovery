@@ -1,10 +1,10 @@
 import React from "react";
-import ReactLeafletKml from 'react-leaflet-kml';
-import Borough_Boundaries from './../Borough_Boundaries.kml';
+import ReactLeafletKml from "react-leaflet-kml";
+import Borough_Boundaries from "./../test_files/Borough_Boundaries.kml";
 // const KML = () => {
-//   const [kml, setKml] = React.useState(null); 
+//   const [kml, setKml] = React.useState(null);
 //   React.useEffect(() => {
-        
+
 //       fetch(
 //         "https://raw.githubusercontent.com/aviklai/react-leaflet-kml/master/src/assets/example1.kml"
 //       )
@@ -38,14 +38,7 @@ const KML = () => {
 
   console.log(kml);
   // return <ReactLeafletKml kml={kml} />;
-  return(<div>
-    {
-      !!kml&&<ReactLeafletKml kml={kml} />
-    }
-  </div>);
-
-
+  return <div>{!!kml && <ReactLeafletKml kml={kml} />}</div>;
 };
-
 
 export default KML;

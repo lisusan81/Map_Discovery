@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import React from "react";
 import GeoMap from "./components/GeoMap";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 import KML from "./components/KML";
+import ShapeFileMap from "./components/ShapeFileMap";
+import ITA_adm from "./test_files/ITA_adm.zip";
+import JSZip from "jszip";
+import shp from "shpjs";
 
 function App() {
   const center = [40.902771, -73.13385];
   const [uploadedGeoJsonFile, setUploadedGeoJsonFile] = useState();
+  const [shpFile, setShpFile] = useState(null);
+  const [map, setMap] = useState(null);
+
+  useEffect(() => {
+    if (!map) return;
+    map.setView([34.74161249883172, 18.6328125], 2);
+  }, [map]);
 
   function readJsonFile(event) {
     event.preventDefault();
@@ -20,11 +32,25 @@ function App() {
     fileReader.readAsText(event.target.files[0]);
   }
 
+  // const shapefileUpload = async (event) => {
+  //   try {
+  //     const zipFile = event.target.files[0]; // Get the selected ZIP file
+  //     const fr = new FileReader();
+  //     fr.onload = async (event) => {
+  //       const shapefile = await shp.parseZip(event.target.result);
+  //       setShpFile(shapefile);
+  //     };
+  //     fr.readAsArrayBuffer(zipFile);
+  //   } catch (error) {
+  //     console.error(error + "shp file upload error");
+  //   }
+  // };
+
   return (
     <div>
       <h1>MAP DISCOVERY</h1>
+
       <label htmlFor="geoJsonInput">Choose a GeoJSON File: </label>
-      <br />
       <input
         type="file"
         accept=".json"
@@ -33,17 +59,27 @@ function App() {
           readJsonFile(event);
         }}
       />
-
-      <MapContainer center={center} zoom={13} scrollWheelZoom={true}>
+      <label htmlFor="shpFiles">Choose a Shapefile: </label>
+      <input
+        type="file"
+        id="zipFileInput"
+        onChange={(event) => {
+          setShpFile(event.target.files[0]);
+        }}
+      />
+      <MapContainer
+        center={center}
+        zoom={13}
+        scrollWheelZoom={true}
+        // ref={setMap}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {/* TODO: add conditions such that depending on the uploaded file format,
-        create a map component accordingly //currently, always creating a
-        GeoJSON Map */}
         {!!uploadedGeoJsonFile && <GeoMap mapData={uploadedGeoJsonFile} />}
-        <KML/>
+        <KML />
+        {!!shpFile && <ShapeFileMap zip={shpFile} />}
       </MapContainer>
     </div>
   );
