@@ -4,10 +4,13 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 import KML from "./components/KML";
-
+import Shp2Geojson from "./components/Shp2Geojson";
+import shpwrite from "shp-write";
+import { read } from "shapefile";
 function App() {
   const center = [40.902771, -73.13385];
   const [uploadedGeoJsonFile, setUploadedGeoJsonFile] = useState();
+  const [uploadedShpFile, setUploadedShpFile] = useState();
 
   function readJsonFile(event) {
     event.preventDefault();
@@ -15,9 +18,34 @@ function App() {
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       const text = JSON.parse(event.target.result);
+      console.log(text);
       setUploadedGeoJsonFile(text);
     };
     fileReader.readAsText(event.target.files[0]);
+  }
+
+  function readShpFile(event) {
+    event.preventDefault();
+    const fileReader = new FileReader();
+
+    fileReader.onload = async (event) => {
+      const arrayBuffer = event.target.result; // ArrayBuffer from FileReader
+
+      try {
+        const { features } = await read(arrayBuffer);
+        const geoJson = {
+          type: "FeatureCollection",
+          features: features || [],
+        };
+
+        console.log(geoJson); // GeoJSON output
+        setUploadedGeoJsonFile(geoJson);
+      } catch (error) {
+        console.error("Error parsing shapefile:", error);
+      }
+    };
+
+    fileReader.readAsArrayBuffer(event.target.files[0]);
   }
 
   return (
@@ -34,6 +62,15 @@ function App() {
         }}
       />
 
+      <input
+        type="file"
+        accept=".shp"
+        id="shpInput"
+        onChange={(event) => {
+          readShpFile(event);
+        }}
+      />
+
       <MapContainer center={center} zoom={13} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -42,8 +79,9 @@ function App() {
         {/* TODO: add conditions such that depending on the uploaded file format,
         create a map component accordingly //currently, always creating a
         GeoJSON Map */}
+        <Shp2Geojson />
         {!!uploadedGeoJsonFile && <GeoMap mapData={uploadedGeoJsonFile} />}
-        <KML/>
+        <KML />
       </MapContainer>
     </div>
   );
